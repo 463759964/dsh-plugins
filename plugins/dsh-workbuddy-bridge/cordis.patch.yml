@@ -1,0 +1,17 @@
+# dsh bundle patch：把桥接服务插进 profile 的层栈。
+#
+# 模型清单本身由安装器写进 profile 的 cordis.patch.yml（llm-pi-ai 的 workbuddy provider），
+# 这里只负责把服务跑起来 —— 单一职责，免得两边都改同一份配置打架。
+- insert:
+    - id: workbuddy-bridge
+      name: 'dsh-workbuddy-bridge'
+      config:
+        host: 127.0.0.1
+        port: 8792
+        # 本机桥接密钥。DSH 的 llm-pi-ai 要求 provider 必须有密钥，缺了会直接报
+        # 「No API key for provider」，所以这把钥匙必须给。安装器会把同一份写进
+        # 这里、写进 llm-pi-ai 的 workbuddy provider，以及 DSH 的凭据库。
+        # 交出去的是本机随机串，真正的 WorkBuddy 令牌始终只在桥内。
+        apiKey: ''
+        # 多账号时指定用哪个 WorkBuddy 账号（uid 或昵称），留空用当前登录的那个
+        uid: ''

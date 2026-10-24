@@ -5,7 +5,7 @@
 每个插件都是独立、零依赖、可单独安装的。装上即用，卸载不留痕。
 
 <p>
-  <img alt="plugins" src="https://img.shields.io/badge/plugins-1-4d6bfe">
+  <img alt="plugins" src="https://img.shields.io/badge/plugins-2-4d6bfe">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
 </p>
 
@@ -15,6 +15,7 @@
 
 | 插件 | 一句话 | 类型 |
 |---|---|---|
+| [workbuddy-bridge](plugins/dsh-workbuddy-bridge) | 把**本机 WorkBuddy 账号里的模型**接进 DSH 当聊天模型，并在输入框上方显示今日积分消耗 | Host + Client |
 | [session-purge](plugins/session-purge) | 侧边栏批量**彻底删除**会话（日志 + 缓存 + 记账 + 提醒），不进回收站 | Host + Client |
 
 ---
@@ -50,9 +51,14 @@ dsh plugin --profile desktop add file:C:/path/to/dsh-plugins/plugins/<插件名>
 ```bash
 git clone https://github.com/463759964/dsh-plugins.git
 cd dsh-plugins/plugins/session-purge && node install.mjs
+# 或者
+cd dsh-plugins/plugins/dsh-workbuddy-bridge && node install.mjs
 ```
 
 路径全部走 `dshHomePath()`，跟随目标机器的 `$DSH_HOME` / `~/.dsh`，**不需要改任何配置**。Windows / macOS / Linux 同一份代码。
+
+> `dsh-workbuddy-bridge` 额外要求那台机器上装了**且登录过** WorkBuddy 客户端 ——
+> 令牌是从它的加密登录态里解出来的，没登录就没得解。详见它的 README。
 
 ---
 
@@ -62,14 +68,22 @@ cd dsh-plugins/plugins/session-purge && node install.mjs
 dsh-plugins/
 ├── README.md
 ├── plugins/
-│   └── session-purge/
-│       ├── lib/index.js          Host 侧：HTTP 桥 + 文件操作
-│       ├── client.js            浏览器侧：UI
-│       ├── cordis.patch.yml     一行 insert
+│   ├── session-purge/
+│   │   ├── lib/index.js          Host 侧：HTTP 桥 + 文件操作
+│   │   ├── client.js            浏览器侧：UI
+│   │   ├── cordis.patch.yml     一行 insert
+│   │   ├── package.json         dsh.bundle.patch + dsh.client.platform
+│   │   ├── install.mjs          安装
+│   │   ├── uninstall.mjs        卸载
+│   │   └── test/                离线自测（不依赖 DSH）
+│   └── dsh-workbuddy-bridge/
+│       ├── lib/                 Host 侧：OpenAI 兼容桥 + 令牌解密 + 积分账本
+│       ├── client.js            浏览器侧：输入框上方的积分徽章
+│       ├── cordis.patch.yml     bundle patch：把桥接服务插进层栈
 │       ├── package.json         dsh.bundle.patch + dsh.client.platform
-│       ├── install.mjs          安装
+│       ├── install.mjs          安装（转发到 tools/install.mjs）
 │       ├── uninstall.mjs        卸载
-│       └── test/                离线自测（不依赖 DSH）
+│       └── tools/               体检、积分 CLI、离线自测
 └── ...
 ```
 
@@ -79,6 +93,10 @@ dsh-plugins/
 cd plugins/session-purge
 node test/selftest.mjs        # Host 侧：文件操作全链路
 node test/client-bundle.mjs   # Client 侧：bundle 契约 + slot 注册面
+
+cd ../dsh-workbuddy-bridge
+node tools/test-usage.mjs            # 积分账本（多进程落盘 / 老格式迁移 / 分桶）
+node tools/test-junction-safety.mjs  # 卸载不会顺着软链删掉源工程
 ```
 
 ---

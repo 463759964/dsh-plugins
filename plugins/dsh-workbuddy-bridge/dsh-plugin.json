@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/T-Auto/dsh-std/8a15541117cb3c13ddb8f2468308691b6051d162/packages/manifest/schema/dsh-plugin-0.15.schema.json",
+  "manifestVersion": "0.15",
+  "id": "dsh-workbuddy-bridge",
+  "name": "dsh-workbuddy-bridge",
+  "version": "1.0.0",
+  "license": "MIT",
+  "facets": {
+    "host": {
+      "entry": "lib/index.js",
+      "apiVersion": "v1alpha1"
+    }
+  },
+  "requires": {
+    "contracts": []
+  },
+  "permissions": [
+    {
+      "name": "workbuddy-bridge.net.loopback",
+      "scope": "network-local",
+      "reason": "Listen on 127.0.0.1 only, so DSH's llm-pi-ai provider can reach the local bridge; nothing binds a public interface."
+    },
+    {
+      "name": "workbuddy-bridge.net.upstream",
+      "scope": "network-remote",
+      "reason": "Forward chat and model-list requests to the WorkBuddy gateway (copilot.tencent.com)."
+    },
+    {
+      "name": "workbuddy-bridge.fs.read",
+      "scope": "filesystem-read",
+      "reason": "Read the local WorkBuddy client's encrypted login state to obtain the account token."
+    },
+    {
+      "name": "workbuddy-bridge.process.spawn",
+      "scope": "subprocess",
+      "reason": "Reuse the WorkBuddy Electron binary in node mode to derive the local at-rest key used to decrypt the login state."
+    }
+  ],
+  "contributes": {
+    "x-display": [
+      {
+        "title": "WorkBuddy Bridge",
+        "description": "Use the models in your local WorkBuddy account as DSH chat models."
+      }
+    ]
+  },
+  "subscriptions": []
+}
