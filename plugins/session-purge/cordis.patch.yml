@@ -1,0 +1,10 @@
+# dsh-session-purge bundle patch
+#
+# 挂一行 Host 插件：注册 POST /session-purge/api 并发布浏览器半侧。
+# root / storagesRoot 走 launcher 的 dshHomePath，跟随 $DSH_HOME，换机器不用改。
+- insert:
+    - id: session-purge
+      name: 'dsh-session-purge'
+      config:
+        root: !!js dshHomePath('sessions')
+        storagesRoot: !!js dshHomePath('storages')
