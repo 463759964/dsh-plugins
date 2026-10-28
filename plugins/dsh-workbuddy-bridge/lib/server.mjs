@@ -15,6 +15,7 @@ import { UpstreamClient, toUpstreamPayload } from './upstream.mjs';
 import { safeEqual } from './local-secret.mjs';
 import { UsageTracker, extractUsage, dayKey } from './usage-tracker.mjs';
 import { BillingClient } from './billing.mjs';
+import { explainUpstreamError } from './prompt-shield.mjs';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
@@ -56,13 +57,17 @@ function createSseParser() {
 }
 
 class BridgeServer {
-  constructor({ vault, gateway, host, port, apiKey, fetchImpl, logger } = {}) {
-    this.upstream = new UpstreamClient({ vault, gateway, fetchImpl });
+  constructor({ vault, gateway, host, port, apiKey, fetchImpl, logger, promptShield } = {}) {
+    // 宿主（插件入口）传进来的是 { info, warn, error } 对象，单独跑时可能是个函数。
+    // 这里统一成 (level, msg) 的函数形状，免得某个日志分支一跑就 TypeError。
+    this.logger = normalizeLogger(logger);
+    this.upstream = new UpstreamClient({ vault, gateway, fetchImpl, promptShield });
+    // system 提示被改写时留一条痕：排查「模型行为变了」时能对上是哪条规则干的
+    this.upstream.onShield = (hits) => this.logger('info', 'system 提示已做等价改写：' + hits.join('、'));
     this.vault = vault;
     this.host = host || '127.0.0.1';
     this.port = Number(port) || 8792;
     this.apiKey = apiKey || '';
-    this.logger = logger || (() => {});
     this.server = null;
     this.listeningPort = null;
     this.usage = new UsageTracker();
@@ -239,6 +244,8 @@ class BridgeServer {
       accounts,
       modelCount: models,
       error: accountError,
+      // 排查「这个实例到底是不是打了净化的那份代码」用
+      promptShield: this.upstream.promptShield,
     });
   }
 
@@ -408,7 +415,7 @@ class BridgeServer {
         if (text) message += `：${text.slice(0, 300)}`;
       }
       const status = upstream.status === 401 ? 401 : upstream.status === 429 ? 429 : 502;
-      return sendJson(res, status, openaiError(message, 'upstream_error', code, status));
+      return sendJson(res, status, openaiError(explainUpstreamError(message), 'upstream_error', code, status));
     }
 
     if (wantsStream) {
@@ -577,6 +584,22 @@ class BridgeServer {
       ...(j.usage ? { usage: j.usage } : {}),
     });
   }
+}
+
+/** 把「函数」和「{info,warn,error} 对象」两种 logger 统一成 (level, msg) 形式。 */
+function normalizeLogger(input) {
+  if (typeof input === 'function') return input;
+  if (input && typeof input === 'object') {
+    return (level, msg) => {
+      const fn = typeof input[level] === 'function' ? input[level] : input.info;
+      try {
+        fn?.call(input, msg);
+      } catch {
+        /* 日志坏了不能挡住请求 */
+      }
+    };
+  }
+  return () => {};
 }
 
 function readBody(req, limit) {

@@ -267,11 +267,14 @@ node tools/test-usage.mjs       # 账本单元测试（多进程落盘 / 老格�
 | `port` | `8792` | 端口上已是本桥在跑就直接接管它，否则顺延；DSH 侧配置是固定的，最好别让它撞 |
 | `apiKey` | 安装器生成 | 不匹配的 `Authorization: Bearer` 会被 401 挡回；留空则不校验 |
 | `uid` | 空 | 多账号时指定用哪个（uid 或昵称），留空用当前登录的那个 |
+| `promptShield` | `true` | system 提示净化，见下面「整轮 502」那条。排查净化本身时才需要关 |
 
 ## 排障
 
 | 现象 | 原因与处置 |
 | --- | --- |
+| 整轮 502：`Illegal API invocation from an unapproved channel` | 上游网关按 **system 提示的措辞**判定「这是不是别的 agent 产品在调我们的模型」，命中就整轮拒。和模型、令牌、请求头都无关：同样令牌发小 payload 正常，同一段话放进 user 角色也正常。桥默认会把已知的渠道特征段落（目前是 DSH 那句「Tokens prefixed with @ …」）**等价改写**后转发，实测 31k 的 system 整段可通过。仍旧报错说明 DSH 又加了新的特征段：`node tools/bisect-system.mjs` 会二分定位到具体段落，按 `lib/prompt-shield.mjs` 的 `RULES` 格式加一条即可。 |
+| 选某个模型就报 `model [xxx] service info not found` | 这个模型在 WorkBuddy 侧已下线或未接入，但它的名字还挂在账号的模型清单里。换一个模型即可；重跑 `node tools/install.mjs` 会用最新清单覆盖 profile。 |
 | `No API key for provider: workbuddy` | DSH 没拿到密钥。跑 `node tools/verify-config.mjs` 逐条看三处密钥哪处没对上，然后 `node tools/install.mjs` 重装修好，**重启 DSH**。 |
 | 请求全部 401 | 桥接手里的密钥和 DSH 发出的不是同一把。通常是改过密钥但没重启——重启 DSH；或者在设置页手填过别的密钥，见下条。 |
 | 设置页手填了密钥之后全 401 | 别手填。密钥已经由安装器写好了，手填的值会和桥接对不上。要恢复就跑 `node tools/install.mjs --rotate-key` 再重启。 |

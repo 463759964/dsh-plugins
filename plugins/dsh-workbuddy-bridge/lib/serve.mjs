@@ -24,6 +24,7 @@ export function startBridge(opts = {}) {
     apiKey: opts.apiKey,
     fetchImpl: opts.fetchImpl,
     logger: opts.logger,
+    promptShield: opts.promptShield,
   });
   return { vault, server };
 }

@@ -5,6 +5,7 @@
  * 令牌由 workbuddy-token.mjs 的 TokenVault 按需供给，401 时自动续期并重放一次。
  */
 import crypto from 'node:crypto';
+import { shieldPayload } from './prompt-shield.mjs';
 
 export const DEFAULT_GATEWAY = 'https://copilot.tencent.com';
 const MODELS_PATH = '/v2/enterprises/personal/models';
@@ -81,10 +82,12 @@ export function isChatModel(raw) {
 }
 
 export class UpstreamClient {
-  constructor({ vault, gateway, fetchImpl } = {}) {
+  constructor({ vault, gateway, fetchImpl, promptShield } = {}) {
     this.vault = vault;
     this.gateway = (gateway || DEFAULT_GATEWAY).replace(/\/+$/, '');
     this.fetchImpl = fetchImpl || globalThis.fetch;
+    // 默认开启：网关注释见 prompt-shield.mjs，关掉只在排查「是不是净化引起的问题」时需要
+    this.promptShield = promptShield !== false;
     this.modelsCache = null;
     this.modelsCacheAt = 0;
     this.modelsTtlMs = 5 * 60 * 1000;
@@ -124,6 +127,12 @@ export class UpstreamClient {
    * 401 时刷新令牌后重放一次；只有一次重放机会，避免死循环。
    */
   async chat(payload, { signal, conversationId } = {}) {
+    // 网关会按 system 提示的措辞判定「是不是未授权渠道」，命中就整轮 502。
+    // 先把已知的渠道特征段落做等价改写，再发出去。
+    if (this.promptShield) {
+      const hits = shieldPayload(payload);
+      if (hits.length) this.onShield?.(hits);
+    }
     const token = await this.vault.getAccessToken();
     let res = await this.send(payload, token, signal, conversationId);
     if (res.status === 401) {

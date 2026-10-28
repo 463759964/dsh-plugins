@@ -24,6 +24,8 @@ export function apply(ctx, config = {}) {
     apiKey: key.apiKey,
     gateway: cfg.gateway || '',
     uid: cfg.uid || '',
+    // 关掉 system 提示净化：false。默认开启，见 prompt-shield.mjs 里的定位结论。
+    promptShield: cfg.promptShield,
     logger,
   });
   if (!key.apiKey) {
