@@ -1,0 +1,6 @@
+# 真实配置里含 Qmsg 推送 key，不入库
+config.json
+
+# 账号凭证：accessToken 可直接登录账号，绝不入库
+tokens/
+account-token.json

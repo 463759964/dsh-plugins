@@ -1,0 +1,1363 @@
+{
+ "date": "2026-11-01",
+ "at": "2026-11-01 22:53:22",
+ "accounts": [
+  {
+   "date": "2026-11-01",
+   "at": "2026-11-01 22:53:22",
+   "account": {
+    "source": "外部凭证 · monkey",
+    "plan": "体验版",
+    "is_paid": false,
+    "balance": 4325.57,
+    "cycle_total": 4412,
+    "cycle_used": 86.43,
+    "cycle_start": "2026-10-17 23:23:54",
+    "groups": [
+     {
+      "name": "套餐基础积分",
+      "total": 500,
+      "used": 0,
+      "remain": 500
+     },
+     {
+      "name": "平台奖励积分",
+      "total": 3912,
+      "used": 86.43,
+      "remain": 3825.57
+     }
+    ]
+   },
+   "used": {
+    "credit": 84.84,
+    "requests": 11,
+    "server_total": 11,
+    "by_client": [
+     {
+      "key": "WorkBuddy",
+      "credit": 84.84,
+      "count": 11
+     }
+    ],
+    "by_model": [
+     {
+      "key": "hy4-preview",
+      "credit": 84.84,
+      "count": 10
+     },
+     {
+      "key": "wb-lite",
+      "credit": 0,
+      "count": 1
+     }
+    ],
+    "by_hour": [
+     {
+      "key": "00",
+      "credit": 2.99,
+      "count": 1
+     },
+     {
+      "key": "07",
+      "credit": 1.9,
+      "count": 1
+     },
+     {
+      "key": "08",
+      "credit": 2.57,
+      "count": 2
+     },
+     {
+      "key": "16",
+      "credit": 1.07,
+      "count": 1
+     },
+     {
+      "key": "22",
+      "credit": 76.31,
+      "count": 6
+     }
+    ],
+    "by_purpose": [
+     {
+      "key": "conversation",
+      "credit": 71.49,
+      "count": 8
+     },
+     {
+      "key": "automation",
+      "credit": 13.35,
+      "count": 2
+     },
+     {
+      "key": "conversation_topic",
+      "credit": 0,
+      "count": 1
+     }
+    ]
+   },
+   "added": {
+    "credit": 106,
+    "items": [
+     {
+      "package": "CodeBuddy个人版国内运营裂变包",
+      "credit": 100,
+      "at": "2026-11-01 00:00:36",
+      "reason": "Buddy 加油站签到"
+     },
+     {
+      "package": "CodeBuddy个人版国内运营裂变包",
+      "credit": 6,
+      "at": "2026-11-01 03:47:13",
+      "reason": "成长计划奖励"
+     }
+    ]
+   },
+   "net": 21.16,
+   "expiry": {
+    "first": {
+     "date": "2026-11-17",
+     "credit": 13.57,
+     "count": 1,
+     "packages": [
+      "CodeBuddy个人版国内运营裂变包"
+     ]
+    },
+    "within_7d": 0,
+    "within_30d": 3419.57,
+    "by_day": [
+     {
+      "date": "2026-11-17",
+      "credit": 13.57,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-18",
+      "credit": 100,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-19",
+      "credit": 1707,
+      "count": 10,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-20",
+      "credit": 108,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-21",
+      "credit": 109,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-22",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-23",
+      "credit": 406,
+      "count": 5,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-24",
+      "credit": 110,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-25",
+      "credit": 109,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-26",
+      "credit": 110,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-27",
+      "credit": 108,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-28",
+      "credit": 105,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-29",
+      "credit": 110,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-30",
+      "credit": 218,
+      "count": 4,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-12-01",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2027-04-19",
+      "credit": 50,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版拉新权益包"
+      ]
+     },
+     {
+      "date": "2027-04-20",
+      "credit": 50,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版拉新权益包"
+      ]
+     },
+     {
+      "date": "2027-04-22",
+      "credit": 100,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版拉新权益包"
+      ]
+     },
+     {
+      "date": "2027-04-23",
+      "credit": 100,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版拉新权益包"
+      ]
+     },
+     {
+      "date": "长期有效",
+      "credit": 500,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人体验版"
+      ]
+     }
+    ],
+    "packages": [
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 13.57,
+      "size": 100,
+      "end_ms": 1794929033000,
+      "end": "2026-11-17 23:23:53",
+      "forever": false,
+      "created": "2026-10-17 23:23:54"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1794932628000,
+      "end": "2026-11-18 00:23:48",
+      "forever": false,
+      "created": "2026-10-18 00:23:49"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795017663000,
+      "end": "2026-11-19 00:01:03",
+      "forever": false,
+      "created": "2026-10-19 00:01:04"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 500,
+      "size": 500,
+      "end_ms": 1795079991000,
+      "end": "2026-11-19 17:19:51",
+      "forever": false,
+      "created": "2026-10-19 17:19:52"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 300,
+      "size": 300,
+      "end_ms": 1795080007000,
+      "end": "2026-11-19 17:20:07",
+      "forever": false,
+      "created": "2026-10-19 17:20:08"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 300,
+      "size": 300,
+      "end_ms": 1795080093000,
+      "end": "2026-11-19 17:21:33",
+      "forever": false,
+      "created": "2026-10-19 17:21:35"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795080100000,
+      "end": "2026-11-19 17:21:40",
+      "forever": false,
+      "created": "2026-10-19 17:21:41"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795080119000,
+      "end": "2026-11-19 17:21:59",
+      "forever": false,
+      "created": "2026-10-19 17:22:00"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795080141000,
+      "end": "2026-11-19 17:22:21",
+      "forever": false,
+      "created": "2026-10-19 17:22:23"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795080153000,
+      "end": "2026-11-19 17:22:33",
+      "forever": false,
+      "created": "2026-10-19 17:22:34"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795080208000,
+      "end": "2026-11-19 17:23:28",
+      "forever": false,
+      "created": "2026-10-19 17:23:29"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 7,
+      "size": 7,
+      "end_ms": 1795098572000,
+      "end": "2026-11-19 22:29:32",
+      "forever": false,
+      "created": "2026-10-19 22:29:34"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795104051000,
+      "end": "2026-11-20 00:00:51",
+      "forever": false,
+      "created": "2026-10-20 00:00:52"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 8,
+      "size": 8,
+      "end_ms": 1795132656000,
+      "end": "2026-11-20 07:57:36",
+      "forever": false,
+      "created": "2026-10-20 07:57:37"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795190474000,
+      "end": "2026-11-21 00:01:14",
+      "forever": false,
+      "created": "2026-10-21 00:01:15"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 9,
+      "size": 9,
+      "end_ms": 1795219027000,
+      "end": "2026-11-21 07:57:07",
+      "forever": false,
+      "created": "2026-10-21 07:57:08"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795276862000,
+      "end": "2026-11-22 00:01:02",
+      "forever": false,
+      "created": "2026-10-22 00:01:03"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795285990000,
+      "end": "2026-11-22 02:33:10",
+      "forever": false,
+      "created": "2026-10-22 02:33:12"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795363287000,
+      "end": "2026-11-23 00:01:27",
+      "forever": false,
+      "created": "2026-10-23 00:01:28"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795391883000,
+      "end": "2026-11-23 07:58:03",
+      "forever": false,
+      "created": "2026-10-23 07:58:04"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795442642000,
+      "end": "2026-11-23 22:04:02",
+      "forever": false,
+      "created": "2026-10-23 22:04:03"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795442647000,
+      "end": "2026-11-23 22:04:07",
+      "forever": false,
+      "created": "2026-10-23 22:04:08"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795442652000,
+      "end": "2026-11-23 22:04:12",
+      "forever": false,
+      "created": "2026-10-23 22:04:13"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795450839000,
+      "end": "2026-11-24 00:20:39",
+      "forever": false,
+      "created": "2026-10-24 00:20:40"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 10,
+      "size": 10,
+      "end_ms": 1795476398000,
+      "end": "2026-11-24 07:26:38",
+      "forever": false,
+      "created": "2026-10-24 07:26:39"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795536014000,
+      "end": "2026-11-25 00:00:14",
+      "forever": false,
+      "created": "2026-10-25 00:00:15"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 9,
+      "size": 9,
+      "end_ms": 1795564857000,
+      "end": "2026-11-25 08:00:57",
+      "forever": false,
+      "created": "2026-10-25 08:00:58"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795622432000,
+      "end": "2026-11-26 00:00:32",
+      "forever": false,
+      "created": "2026-10-26 00:00:33"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 10,
+      "size": 10,
+      "end_ms": 1795651416000,
+      "end": "2026-11-26 08:03:36",
+      "forever": false,
+      "created": "2026-10-26 08:03:37"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795708838000,
+      "end": "2026-11-27 00:00:38",
+      "forever": false,
+      "created": "2026-10-27 00:00:39"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 8,
+      "size": 8,
+      "end_ms": 1795737720000,
+      "end": "2026-11-27 08:02:00",
+      "forever": false,
+      "created": "2026-10-27 08:02:02"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795795250000,
+      "end": "2026-11-28 00:00:50",
+      "forever": false,
+      "created": "2026-10-28 00:00:51"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 5,
+      "size": 5,
+      "end_ms": 1795824132000,
+      "end": "2026-11-28 08:02:12",
+      "forever": false,
+      "created": "2026-10-28 08:02:13"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795881637000,
+      "end": "2026-11-29 00:00:37",
+      "forever": false,
+      "created": "2026-10-29 00:00:38"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 10,
+      "size": 10,
+      "end_ms": 1795910508000,
+      "end": "2026-11-29 08:01:48",
+      "forever": false,
+      "created": "2026-10-29 08:01:49"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795968029000,
+      "end": "2026-11-30 00:00:29",
+      "forever": false,
+      "created": "2026-10-31 00:00:30"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795968033000,
+      "end": "2026-11-30 00:00:33",
+      "forever": false,
+      "created": "2026-10-30 00:00:34"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 9,
+      "size": 9,
+      "end_ms": 1795977313000,
+      "end": "2026-11-30 02:35:13",
+      "forever": false,
+      "created": "2026-10-30 02:35:14"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 9,
+      "size": 9,
+      "end_ms": 1795996902000,
+      "end": "2026-11-30 08:01:42",
+      "forever": false,
+      "created": "2026-10-31 08:01:43"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1796054435000,
+      "end": "2026-12-01 00:00:35",
+      "forever": false,
+      "created": "2026-11-01 00:00:36"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1796068032000,
+      "end": "2026-12-01 03:47:12",
+      "forever": false,
+      "created": "2026-11-01 03:47:13"
+     },
+     {
+      "name": "CodeBuddy个人版拉新权益包",
+      "remain": 50,
+      "size": 50,
+      "end_ms": 1808136758000,
+      "end": "2027-04-19 20:12:38",
+      "forever": false,
+      "created": "2026-10-19 20:12:39"
+     },
+     {
+      "name": "CodeBuddy个人版拉新权益包",
+      "remain": 50,
+      "size": 50,
+      "end_ms": 1808232076000,
+      "end": "2027-04-20 22:41:16",
+      "forever": false,
+      "created": "2026-10-20 22:41:17"
+     },
+     {
+      "name": "CodeBuddy个人版拉新权益包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1808361173000,
+      "end": "2027-04-22 10:32:53",
+      "forever": false,
+      "created": "2026-10-22 10:32:54"
+     },
+     {
+      "name": "CodeBuddy个人版拉新权益包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1808475646000,
+      "end": "2027-04-23 18:20:46",
+      "forever": false,
+      "created": "2026-10-23 18:20:47"
+     },
+     {
+      "name": "CodeBuddy个人体验版",
+      "remain": 500,
+      "size": 500,
+      "end_ms": 2050629326000,
+      "end": "2034-12-25 11:15:26",
+      "forever": true,
+      "created": "2026-09-26 18:24:55"
+     }
+    ]
+   },
+   "opening_balance": 4304.41,
+   "cycle_check": {
+    "start": "2026-10-19 17:14:37",
+    "detail_credit": null,
+    "cycle_used": 86.43
+   },
+   "id": "monkey",
+   "label": "monkey"
+  },
+  {
+   "date": "2026-11-01",
+   "at": "2026-11-01 22:53:24",
+   "account": {
+    "source": "外部凭证 · 173",
+    "plan": "体验版",
+    "is_paid": false,
+    "balance": 3315.51,
+    "cycle_total": 4777,
+    "cycle_used": 1461.49,
+    "cycle_start": "2026-10-19 17:14:37",
+    "groups": [
+     {
+      "name": "套餐基础积分",
+      "total": 500,
+      "used": 0,
+      "remain": 500
+     },
+     {
+      "name": "平台奖励积分",
+      "total": 4277,
+      "used": 1461.49,
+      "remain": 2815.51
+     }
+    ]
+   },
+   "used": {
+    "credit": 656.24,
+    "requests": 507,
+    "server_total": 507,
+    "by_client": [
+     {
+      "key": "WorkBuddy",
+      "credit": 653.06,
+      "count": 501
+     },
+     {
+      "key": "app_cloud",
+      "credit": 3.18,
+      "count": 6
+     }
+    ],
+    "by_model": [
+     {
+      "key": "deepseek-v4-pro",
+      "credit": 572.45,
+      "count": 215
+     },
+     {
+      "key": "deepseek-v4.1-flash",
+      "credit": 49.94,
+      "count": 242
+     },
+     {
+      "key": "hy4-preview",
+      "credit": 17.83,
+      "count": 3
+     },
+     {
+      "key": "deepseek-v4-flash",
+      "credit": 15.23,
+      "count": 45
+     },
+     {
+      "key": "glm-5.3-flash",
+      "credit": 0.79,
+      "count": 1
+     },
+     {
+      "key": "wb-lite",
+      "credit": 0,
+      "count": 1
+     }
+    ],
+    "by_hour": [
+     {
+      "key": "00",
+      "credit": 1.55,
+      "count": 14
+     },
+     {
+      "key": "01",
+      "credit": 7.99,
+      "count": 65
+     },
+     {
+      "key": "02",
+      "credit": 1.67,
+      "count": 14
+     },
+     {
+      "key": "03",
+      "credit": 1.8,
+      "count": 15
+     },
+     {
+      "key": "04",
+      "credit": 3.63,
+      "count": 29
+     },
+     {
+      "key": "12",
+      "credit": 0.28,
+      "count": 2
+     },
+     {
+      "key": "13",
+      "credit": 2.24,
+      "count": 15
+     },
+     {
+      "key": "20",
+      "credit": 9.48,
+      "count": 61
+     },
+     {
+      "key": "21",
+      "credit": 219.68,
+      "count": 86
+     },
+     {
+      "key": "22",
+      "credit": 407.92,
+      "count": 206
+     }
+    ],
+    "by_purpose": [
+     {
+      "key": "conversation",
+      "credit": 649.06,
+      "count": 500
+     },
+     {
+      "key": "conversation:compact",
+      "credit": 5.18,
+      "count": 1
+     },
+     {
+      "key": "automation",
+      "credit": 2,
+      "count": 4
+     },
+     {
+      "key": "conversation_topic",
+      "credit": 0,
+      "count": 2
+     }
+    ]
+   },
+   "added": {
+    "credit": 107,
+    "items": [
+     {
+      "package": "CodeBuddy个人版国内运营裂变包",
+      "credit": 100,
+      "at": "2026-11-01 00:00:38",
+      "reason": "Buddy 加油站签到"
+     },
+     {
+      "package": "CodeBuddy个人版国内运营裂变包",
+      "credit": 7,
+      "at": "2026-11-01 03:47:15",
+      "reason": "成长计划奖励"
+     }
+    ]
+   },
+   "net": -549.24,
+   "expiry": {
+    "first": {
+     "date": "2026-11-19",
+     "credit": 38.51,
+     "count": 1,
+     "packages": [
+      "CodeBuddy个人版拉新权益包"
+     ]
+    },
+    "within_7d": 0,
+    "within_30d": 2708.51,
+    "by_day": [
+     {
+      "date": "2026-11-19",
+      "credit": 38.51,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版拉新权益包"
+      ]
+     },
+     {
+      "date": "2026-11-20",
+      "credit": 1400,
+      "count": 10,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-21",
+      "credit": 100,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-22",
+      "credit": 114,
+      "count": 3,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-23",
+      "credit": 107,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-24",
+      "credit": 105,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-25",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-26",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-27",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-28",
+      "credit": 106,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-29",
+      "credit": 108,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-11-30",
+      "credit": 312,
+      "count": 5,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "2026-12-01",
+      "credit": 107,
+      "count": 2,
+      "packages": [
+       "CodeBuddy个人版国内运营裂变包"
+      ]
+     },
+     {
+      "date": "长期有效",
+      "credit": 500,
+      "count": 1,
+      "packages": [
+       "CodeBuddy个人体验版"
+      ]
+     }
+    ],
+    "packages": [
+     {
+      "name": "CodeBuddy个人版拉新权益包",
+      "remain": 38.51,
+      "size": 1500,
+      "end_ms": 1795079676000,
+      "end": "2026-11-19 17:14:36",
+      "forever": false,
+      "created": "2026-10-19 17:14:38"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795185666000,
+      "end": "2026-11-20 22:41:06",
+      "forever": false,
+      "created": "2026-10-20 22:41:07"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 300,
+      "size": 300,
+      "end_ms": 1795185680000,
+      "end": "2026-11-20 22:41:20",
+      "forever": false,
+      "created": "2026-10-20 22:41:21"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 300,
+      "size": 300,
+      "end_ms": 1795186001000,
+      "end": "2026-11-20 22:46:41",
+      "forever": false,
+      "created": "2026-10-20 22:46:42"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186008000,
+      "end": "2026-11-20 22:46:48",
+      "forever": false,
+      "created": "2026-10-20 22:46:49"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186033000,
+      "end": "2026-11-20 22:47:13",
+      "forever": false,
+      "created": "2026-10-20 22:47:14"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186043000,
+      "end": "2026-11-20 22:47:23",
+      "forever": false,
+      "created": "2026-10-20 22:47:24"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186048000,
+      "end": "2026-11-20 22:47:28",
+      "forever": false,
+      "created": "2026-10-20 22:47:29"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186057000,
+      "end": "2026-11-20 22:47:37",
+      "forever": false,
+      "created": "2026-10-20 22:47:38"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186070000,
+      "end": "2026-11-20 22:47:50",
+      "forever": false,
+      "created": "2026-10-20 22:47:51"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795186121000,
+      "end": "2026-11-20 22:48:41",
+      "forever": false,
+      "created": "2026-10-20 22:48:42"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795234558000,
+      "end": "2026-11-21 12:15:58",
+      "forever": false,
+      "created": "2026-10-21 12:15:59"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795315251000,
+      "end": "2026-11-22 10:40:51",
+      "forever": false,
+      "created": "2026-10-22 10:40:52"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 9,
+      "size": 9,
+      "end_ms": 1795315252000,
+      "end": "2026-11-22 10:40:52",
+      "forever": false,
+      "created": "2026-10-22 10:40:53"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 5,
+      "size": 5,
+      "end_ms": 1795320893000,
+      "end": "2026-11-22 12:14:53",
+      "forever": false,
+      "created": "2026-10-22 12:14:54"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795363289000,
+      "end": "2026-11-23 00:01:29",
+      "forever": false,
+      "created": "2026-10-23 00:01:30"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 7,
+      "size": 7,
+      "end_ms": 1795391884000,
+      "end": "2026-11-23 07:58:04",
+      "forever": false,
+      "created": "2026-10-23 07:58:05"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795450311000,
+      "end": "2026-11-24 00:11:51",
+      "forever": false,
+      "created": "2026-10-24 00:11:52"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 5,
+      "size": 5,
+      "end_ms": 1795485271000,
+      "end": "2026-11-24 09:54:31",
+      "forever": false,
+      "created": "2026-10-24 09:54:32"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795536016000,
+      "end": "2026-11-25 00:00:16",
+      "forever": false,
+      "created": "2026-10-25 00:00:17"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795564859000,
+      "end": "2026-11-25 08:00:59",
+      "forever": false,
+      "created": "2026-10-25 08:01:00"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795622434000,
+      "end": "2026-11-26 00:00:34",
+      "forever": false,
+      "created": "2026-10-26 00:00:35"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795651418000,
+      "end": "2026-11-26 08:03:38",
+      "forever": false,
+      "created": "2026-10-26 08:03:39"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795708840000,
+      "end": "2026-11-27 00:00:40",
+      "forever": false,
+      "created": "2026-10-27 00:00:41"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795737723000,
+      "end": "2026-11-27 08:02:03",
+      "forever": false,
+      "created": "2026-10-27 08:02:04"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795795253000,
+      "end": "2026-11-28 00:00:53",
+      "forever": false,
+      "created": "2026-10-28 00:00:54"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795824135000,
+      "end": "2026-11-28 08:02:15",
+      "forever": false,
+      "created": "2026-10-28 08:02:16"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795881639000,
+      "end": "2026-11-29 00:00:39",
+      "forever": false,
+      "created": "2026-10-29 00:00:40"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 8,
+      "size": 8,
+      "end_ms": 1795910511000,
+      "end": "2026-11-29 08:01:51",
+      "forever": false,
+      "created": "2026-10-29 08:01:52"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795968031000,
+      "end": "2026-11-30 00:00:31",
+      "forever": false,
+      "created": "2026-10-31 00:00:32"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795968036000,
+      "end": "2026-11-30 00:00:36",
+      "forever": false,
+      "created": "2026-10-30 00:00:37"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1795968713000,
+      "end": "2026-11-30 00:11:53",
+      "forever": false,
+      "created": "2026-10-31 00:11:54"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795971898000,
+      "end": "2026-11-30 01:04:58",
+      "forever": false,
+      "created": "2026-10-31 01:04:59"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 6,
+      "size": 6,
+      "end_ms": 1795989926000,
+      "end": "2026-11-30 06:05:26",
+      "forever": false,
+      "created": "2026-10-30 06:05:27"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 100,
+      "size": 100,
+      "end_ms": 1796054437000,
+      "end": "2026-12-01 00:00:37",
+      "forever": false,
+      "created": "2026-11-01 00:00:38"
+     },
+     {
+      "name": "CodeBuddy个人版国内运营裂变包",
+      "remain": 7,
+      "size": 7,
+      "end_ms": 1796068034000,
+      "end": "2026-12-01 03:47:14",
+      "forever": false,
+      "created": "2026-11-01 03:47:15"
+     },
+     {
+      "name": "CodeBuddy个人体验版",
+      "remain": 500,
+      "size": 500,
+      "end_ms": 2052810875000,
+      "end": "2035-01-19 17:14:35",
+      "forever": true,
+      "created": "2026-10-19 17:14:36"
+     }
+    ]
+   },
+   "opening_balance": 3864.75,
+   "cycle_check": {
+    "start": "2026-10-19 17:14:37",
+    "detail_credit": null,
+    "cycle_used": 1461.49
+   },
+   "id": "173",
+   "label": "173"
+  }
+ ],
+ "totals": {
+  "balance": 7641.08,
+  "used": 741.08,
+  "added": 213,
+  "net": -528.08,
+  "requests": 518,
+  "within_7d": 0,
+  "within_30d": 6128.08
+ }
+}

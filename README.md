@@ -20,6 +20,16 @@
 
 ---
 
+## 附带工具（非插件）
+
+放在 `tools/` 下，独立运行，不需要安装进宿主。
+
+| 工具 | 一句话 |
+|---|---|
+| [credits-dashboard](tools/credits-dashboard) | 查 **WorkBuddy 账号侧积分**（余额 / 今日消耗 / 新增 / 积分包到期），生成可托管的多账号看板，可选每天推送到 QQ |
+
+---
+
 ## 通用安装方式
 
 所有插件都遵循同一套约定：**零 npm 依赖**，Host 侧只用 Node 内置模块，Client 侧只用 shell 自带的 `react`。所以不需要编译、不需要装依赖、不需要联网。
@@ -84,7 +94,8 @@ dsh-plugins/
 │       ├── install.mjs          安装（转发到 tools/install.mjs）
 │       ├── uninstall.mjs        卸载
 │       └── tools/               体检、积分 CLI、离线自测
-└── ...
+└── tools/
+    └── credits-dashboard/       独立工具：积分查询 + 静态看板 + QQ 推送（非插件）
 ```
 
 每个插件自带测试，用纯 Node 跑，不需要启动 DSH：

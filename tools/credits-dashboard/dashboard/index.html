@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WorkBuddy 积分看板</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --line:#e6e8eb; --line2:#f0f1f3;
+    --tx:#18181b; --tx2:#5b5f66; --tx3:#8b9096;
+    --red:#e5484d; --green:#30a46c; --amber:#f5a524; --blue:#6366f1;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 20px 56px}
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
+  h1{font-size:20px;font-weight:650;margin:0;letter-spacing:-.01em}
+  .sub{color:var(--tx2);font-size:13px}
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:600}
+  .badge.gray{background:#f1f2f4;color:var(--tx2)}
+  .badge.ok{background:#e9f7ef;color:#197f4d}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  @media(max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+  .kpi .lab{font-size:12px;color:var(--tx3);margin-bottom:6px}
+  .kpi .val{font-size:24px;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .kpi .foot{font-size:12px;color:var(--tx3);margin-top:4px}
+  .neg{color:var(--red)} .pos{color:var(--green)}
+
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 10px}
+  .tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--tx2);
+    font-size:13px;cursor:pointer;font-family:inherit}
+  .tab[aria-selected="true"]{background:#18181b;color:#fff;border-color:#18181b}
+
+  section{margin-top:20px}
+  h2{font-size:14px;font-weight:650;margin:0 0 10px;display:flex;align-items:baseline;gap:8px}
+  h2 small{font-weight:400;color:var(--tx3);font-size:12px}
+
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line2);font-size:13px}
+  th{color:var(--tx3);font-weight:500;font-size:12px;background:#fafbfc}
+  td.num,th.num{text-align:right}
+  tr:last-child td{border-bottom:none}
+
+  .bar{height:6px;border-radius:99px;background:#eceef1;overflow:hidden;min-width:60px}
+  .bar>i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+  .bar.red>i{background:var(--red)} .bar.green>i{background:var(--green)} .bar.amber>i{background:var(--amber)}
+
+  .hours{display:flex;align-items:flex-end;gap:3px;height:90px;padding:8px 10px}
+  .hours .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+  .hours .b{width:100%;border-radius:3px 3px 0 0;background:#c7d2fe;min-height:2px}
+  .hours .b.hot{background:var(--blue)}
+  .hours .t{font-size:10px;color:var(--tx3);font-variant-numeric:tabular-nums}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px 0;font-size:12px;color:var(--tx2)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+  .empty{color:var(--tx3);font-size:13px;padding:18px;text-align:center}
+  footer{margin-top:28px;color:var(--tx3);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>WorkBuddy 积分看板</h1>
+      <div class="sub" id="acct">加载中…</div>
+    </div>
+  </header>
+
+  <div class="grid" id="kpis"></div>
+
+  <section>
+    <h2>余额趋势 <small>每日快照</small></h2>
+    <div class="card"><div class="legend" id="legend"></div><div id="chart"></div></div>
+  </section>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="detail"></div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const n = (v) => Number(v || 0).toFixed(2);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = (s) => `${Number(String(s).slice(5,7))}月${Number(String(s).slice(8,10))}日`;
+const dayLeft = (d) => Math.max(0, Math.ceil((new Date(d + 'T23:59:59') - new Date()) / 864e5));
+const PALETTE = ['#6366f1','#f59e0b','#10b981','#ec4899','#0ea5e9'];
+
+let DATA = null, HIST = [], ACTIVE = 0;
+
+function header() {
+  const a = DATA.accounts || [];
+  $('acct').innerHTML = `<span class="badge ok">${a.length} 个账号</span> ` +
+    a.map((r) => `<span class="badge gray">${esc(r.label)}</span>`).join(' ') +
+    ` <span style="color:var(--tx3)">· 更新于 ${esc((DATA.at || '').slice(11,16))}</span>`;
+
+  const prev = [...HIST].reverse().find((h) => h.date !== DATA.date);
+  const d = prev ? DATA.totals.balance - prev.balance : null;
+  $('kpis').innerHTML = [
+    { lab:'合计余额', val:n(DATA.totals.balance), foot: d === null ? '首个快照' : `较上次 ${d>=0?'+':'−'}${n(Math.abs(d))}`, cls: d===null?'':(d>=0?'pos':'neg') },
+    { lab:'今日消耗', val:'−' + n(DATA.totals.used), foot:`${DATA.totals.requests} 笔请求`, cls:'neg' },
+    { lab:'今日新增', val:'+' + n(DATA.totals.added), foot:'各账号发放合计', cls:'pos' },
+    { lab:'今日净变化', val:(DATA.totals.net>=0?'+':'−') + n(Math.abs(DATA.totals.net)), foot:'新增 − 消耗', cls: DATA.totals.net>=0?'pos':'neg' },
+  ].map((k) => `<div class="card kpi"><div class="lab">${k.lab}</div>
+      <div class="val ${k.cls}">${k.val}</div><div class="foot">${k.foot}</div></div>`).join('');
+}
+
+function tabs() {
+  const a = DATA.accounts || [];
+  if (a.length < 2) { $('tabs').innerHTML = ''; return; }
+  $('tabs').innerHTML = a.map((r, i) =>
+    `<button class="tab" data-i="${i}" aria-selected="${i===ACTIVE}">${esc(r.label)}</button>`).join('');
+  $('tabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ACTIVE = +b.dataset.i; tabs(); detail(); });
+}
+
+function detail() {
+  const r = (DATA.accounts || [])[ACTIVE];
+  if (!r) { $('detail').innerHTML = '<div class="card"><div class="empty">暂无账号数据</div></div>'; return; }
+  const a = r.account || {};
+
+  $('detail').innerHTML = `
+    <section>
+      <h2>${esc(r.label)} · 余额构成
+        <span class="badge">${esc(a.plan || '—')}</span>
+        ${a.is_paid ? '<span class="badge ok">付费</span>' : '<span class="badge gray">免费</span>'}
+        <small>账期已用 ${n(a.cycle_used)} / ${n(a.cycle_total)}，自 ${esc(a.cycle_start || '—')} 起</small>
+      </h2>
+      <div class="card" style="padding:6px 6px"><table>
+        <tr><th>积分类型</th><th class="num">剩余</th><th class="num">总额</th><th style="width:38%">已用占比</th></tr>
+        ${(a.groups || []).map((g) => {
+          const pct = g.total > 0 ? Math.min(100, (g.used / g.total) * 100) : 0;
+          return `<tr><td>${esc(g.name)}</td><td class="num">${n(g.remain)}</td><td class="num">${n(g.total)}</td>
+            <td><div class="bar"><i style="width:${pct}%"></i></div></td></tr>`;
+        }).join('')}
+      </table></div>
+    </section>
+
+    <section>
+      <h2>今日消耗 <small>共 ${n(r.used.credit)}，${r.used.requests} 笔</small></h2>
+      <div class="card" style="padding:6px 6px"><table>
+        <tr><th>模型</th><th class="num">消耗</th><th class="num">笔数</th><th style="width:40%"></th></tr>
+        ${(r.used.by_model || []).map((m) => `<tr><td>${esc(m.key)}</td><td class="num neg">−${n(m.credit)}</td>
+          <td class="num">${m.count}</td><td><div class="bar red"><i style="width:${(m.credit/Math.max(1,...r.used.by_model.map(x=>x.credit)))*100}%"></i></div></td></tr>`).join('')
+          || '<tr><td colspan="4" class="empty">今日无消耗记录</td></tr>'}
+      </table></div>
+      <div class="card" style="margin-top:12px">
+        <div style="padding:8px 12px 0;color:var(--tx3);font-size:12px">按小时分布（单位：积分）</div>
+        <div class="hours">${hours(r)}</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>今日新增 <small>共 +${n(r.added.credit)}</small></h2>
+      <div class="card" style="padding:6px 6px"><table>
+        <tr><th>时间</th><th>来源</th><th class="num">积分</th></tr>
+        ${(r.added.items || []).map((it) => `<tr><td>${esc((it.at||'').slice(11,16))}</td>
+          <td>${esc(it.reason || it.package)}</td><td class="num pos">+${n(it.credit)}</td></tr>`).join('')
+          || '<tr><td colspan="3" class="empty">今日无新增</td></tr>'}
+      </table></div>
+    </section>
+
+    <section>
+      <h2>积分到期 <small>7 天内 ${n(r.expiry.within_7d)}　30 天内 ${n(r.expiry.within_30d)}</small></h2>
+      <div class="card" style="padding:6px 6px"><table>
+        <tr><th>到期日</th><th class="num">剩余</th><th class="num">积分</th><th style="width:34%"></th><th>来源</th></tr>
+        ${expiryRows(r)}
+      </table></div>
+    </section>`;
+}
+
+function hours(r) {
+  const hrs = (r.used.by_hour || []).filter((h) => h.key);
+  if (!hrs.length) return '<div class="empty" style="width:100%">暂无数据</div>';
+  const max = Math.max(...hrs.map((h) => h.credit), 1);
+  return hrs.map((h) => `<div class="col" title="${h.key}:00 · ${n(h.credit)} · ${h.count} 笔">
+    <div class="b ${h.credit===max?'hot':''}" style="height:${(h.credit/max)*72}px"></div>
+    <div class="t">${h.key}</div></div>`).join('');
+}
+
+function expiryRows(r) {
+  const packs = r.expiry.by_day || [];
+  if (!packs.length) return '<tr><td colspan="5" class="empty">无待到期积分</td></tr>';
+  const max = Math.max(...packs.map((p) => p.credit), 1);
+  return packs.map((p) => {
+    const long = p.date === '长期有效';
+    const left = long ? null : dayLeft(p.date);
+    const cls = long ? 'green' : left <= 7 ? 'red' : left <= 14 ? 'amber' : '';
+    return `<tr><td>${long ? '长期有效' : md(p.date)}</td>
+      <td class="num">${long ? '—' : left + ' 天'}</td>
+      <td class="num">${n(p.credit)}</td>
+      <td><div class="bar ${cls}"><i style="width:${(p.credit/max)*100}%"></i></div></td>
+      <td style="color:var(--tx2);font-size:12px">${esc(p.packages.join('、'))}</td></tr>`;
+  }).join('');
+}
+
+function chart() {
+  const rows = (HIST || []).slice(-30);
+  if (rows.length < 2) { $('chart').innerHTML = '<div class="empty">积累 2 天以上快照后显示趋势</div>'; return; }
+
+  // 系列：合计 + 每个账号
+  const ids = [...new Set(rows.flatMap((h) => (h.byAccount || []).map((a) => a.id)))];
+  const series = [
+    { key:'__total', label:'合计', color:'#18181b', get:(h) => h.balance },
+    ...ids.map((id, i) => ({
+      key:id, color:PALETTE[i % PALETTE.length],
+      label:(rows.at(-1).byAccount || []).find((a) => a.id === id)?.label || id,
+      get:(h) => (h.byAccount || []).find((a) => a.id === id)?.balance ?? null,
+    })),
+  ];
+
+  const vals = rows.flatMap((h) => series.map((s) => s.get(h))).filter((v) => v != null);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = Math.max(1, hi - lo);
+  const W = 880, H = 250, PL = 54, PR = 16, PT = 18, PB = 30;
+  const x = (i) => PL + (i * (W - PL - PR)) / (rows.length - 1);
+  const y = (v) => PT + (1 - (v - lo) / span) * (H - PT - PB);
+
+  const ticks = [0, 0.5, 1].map((t) => {
+    const v = lo + span * t, yy = y(v);
+    return `<line x1="${PL}" y1="${yy}" x2="${W-PR}" y2="${yy}" stroke="#eef0f2"/>
+      <text x="${PL-8}" y="${yy+4}" text-anchor="end" font-size="11" fill="#8b9096">${v.toFixed(0)}</text>`;
+  }).join('');
+
+  const step = Math.max(1, Math.ceil(rows.length / 8));
+  const xl = rows.map((r, i) => i % step === 0 || i === rows.length - 1
+    ? `<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="11" fill="#8b9096">${String(r.date).slice(5)}</text>` : '').join('');
+
+  const paths = series.map((s) => {
+    const pts = rows.map((h, i) => { const v = s.get(h); return v == null ? null : `${x(i).toFixed(1)},${y(v).toFixed(1)}`; }).filter(Boolean);
+    if (pts.length < 2) return '';
+    return `<polyline points="${pts.join(' ')}" fill="none" stroke="${s.color}" stroke-width="${s.key==='__total'?2.4:1.6}"
+      stroke-linejoin="round" stroke-linecap="round" ${s.key==='__total'?'':'opacity=".85"'}/>` +
+      pts.map((p) => `<circle cx="${p.split(',')[0]}" cy="${p.split(',')[1]}" r="2.4" fill="${s.color}"><title>${s.label}</title></circle>`).join('');
+  }).join('');
+
+  $('legend').innerHTML = series.filter((s) => s.get(rows.at(-1)) != null)
+    .map((s) => `<span><i style="background:${s.color}"></i>${esc(s.label)} ${n(s.get(rows.at(-1)))}</span>`).join('');
+  $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+    ${ticks}${paths}${xl}</svg>`;
+}
+
+(async () => {
+  try {
+    const [d, h] = await Promise.all([
+      fetch('data.json?t=' + Date.now()).then((r) => r.json()),
+      fetch('history.json?t=' + Date.now()).then((r) => r.json()).catch(() => []),
+    ]);
+    DATA = d; HIST = Array.isArray(h) ? h : [];
+    header(); tabs(); detail(); chart();
+    $('foot').textContent = `数据来源：账号服务端逐笔扣费记录 · 快照时间 ${d.at}`;
+  } catch (e) {
+    $('acct').innerHTML = '<span class="badge gray">数据未生成</span>';
+    $('kpis').innerHTML = '<div class="card"><div class="empty">data.json 读取失败，请先运行 build.mjs</div></div>';
+    $('foot').textContent = String(e);
+  }
+})();
+</script>
+</body>
+</html>

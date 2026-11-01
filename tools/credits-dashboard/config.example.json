@@ -1,0 +1,13 @@
+{
+  "qmsgKey": "<Qmsg 酱的推送 key，不需要 QQ 推送就留空>",
+  "qmsgEndpoint": "https://qmsg.zendee.cn/v3/send",
+  "creditsScript": "./bin/credits-account.mjs",
+  "outDir": "./dashboard",
+  "accounts": [
+    {
+      "id": "main",
+      "label": "主号",
+      "uid": "<本机已登录账号的 uid，用 node bin/dump-token.mjs --list 查看>"
+    }
+  ]
+}
