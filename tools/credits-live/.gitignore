@@ -1,0 +1,10 @@
+# 账号凭证：accessToken 可直接登录账号，绝不入库
+tokens/
+*.token.json
+account-token.json
+
+# 真实配置（可含账号信息，按需保留；模板见 config.example.json）
+config.json
+
+node_modules/
+*.log

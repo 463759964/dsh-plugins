@@ -1,0 +1,6 @@
+{
+  "accounts": [
+    { "id": "main", "label": "主号", "tokenFile": "tokens/main.json" },
+    { "id": "alt", "label": "小号", "tokenFile": "tokens/alt.json" }
+  ]
+}
