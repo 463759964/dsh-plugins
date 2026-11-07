@@ -18,10 +18,10 @@ DSH (llm-pi-ai) ──► 127.0.0.1:8792/v1/chat/completions ──► copilot.t
 
 ## 它能给你什么
 
-- 账号里**全部 33 个模型**（GLM / Kimi / DeepSeek / MiniMax / 混元 / Step / MiMo …）直接出现在 DSH 的模型选择器里
+- 账号里**全部模型**（GLM / Kimi / DeepSeek / MiniMax / 混元 / Step / MiMo …）直接出现在 DSH 的模型选择器里
 - 走的是你自己的 WorkBuddy 额度，**不需要另外申请任何 API Key**
 - 流式、非流式、工具调用、视觉输入、推理内容都透传
-- **思考等级可调**：上游声明了 `supportedEfforts` 的 10 个模型，DSH 里会出现「Reasoning effort」下拉框
+- **思考等级可调**：上游声明了 `supportedEfforts` 的模型，DSH 里会出现「Reasoning effort」下拉框
 - 令牌过期自动续；客户端换了登录态，桥接跟着走
 
 ## 装
@@ -104,10 +104,10 @@ node tools/list-models.mjs
 ```bash
 node install.mjs --set-default deepseek-v4.1-flash
 node install.mjs --set-default glm-5.3          # 换 GLM
-node install.mjs --set-default kimi-k2.7        # 换 Kimi
+node install.mjs --set-default kimi-k2.8-preview  # 换 Kimi
 ```
 
-在 DSH 界面里切：设置 → 模型 → provider「WorkBuddy 账号」，下面挂着全部 33 个模型。
+在 DSH 界面里切：设置 → 模型 → provider「WorkBuddy 账号」，下面挂着账号当前的全部模型。
 
 ### 在 DSH 界面里看（推荐）
 
@@ -186,7 +186,7 @@ DSH 只在模型「声明了推理能力」时才显示「Reasoning effort」下
 | 模型 | 可选等级 |
 | --- | --- |
 | `glm-5.3`、`glm-5.3-flash` | low / high / max |
-| `deepseek-v4.1-flash`、`kimi-k2.8-preview` | 关闭 / low / high / max |
+| `deepseek-v4.1-flash`、`kimi-k2.8-preview`、`kimi-k3.1-pro` | 关闭 / low / high / max（`kimi-k3.1-pro` 无「关闭」） |
 | `space-bunny`、`minimax-m3.1-flash` | low / medium / high / xhigh / max |
 | `step-5-preview` | low / medium / high |
 | `hy3-x` | low / high |
@@ -273,7 +273,7 @@ node tools/test-usage.mjs       # 账本单元测试（多进程落盘 / 老格�
 
 | 现象 | 原因与处置 |
 | --- | --- |
-| 整轮 502：`Illegal API invocation from an unapproved channel` | 上游网关按 **system 提示的措辞**判定「这是不是别的 agent 产品在调我们的模型」，命中就整轮拒。和模型、令牌、请求头都无关：同样令牌发小 payload 正常，同一段话放进 user 角色也正常。桥默认会把已知的渠道特征段落（目前是 DSH 那句「Tokens prefixed with @ …」）**等价改写**后转发，实测 31k 的 system 整段可通过。仍旧报错说明 DSH 又加了新的特征段：`node tools/bisect-system.mjs` 会二分定位到具体段落，按 `lib/prompt-shield.mjs` 的 `RULES` 格式加一条即可。 |
+| 整轮 502：`Illegal API invocation from an unapproved channel` | 上游网关按**请求的渠道特征**判定「这是不是别的 agent 产品在调我们的模型」，命中就整轮拒。已知三类指纹：① **developer 角色本身**（2026-11-07 定位：DSH 新版把系统提示改用 developer 角色发出，网关见 developer 即整轮拒，与内容无关；桥在 `toUpstreamPayload` 统一改名成 system，顺带让净化规则重新覆盖这段文本）；② **system 提示里的措辞特征段**（「Tokens prefixed with @ …」路径约定段、Web GUI 说明段），桥做等价改写后转发；③ 其他尚未定位的字段。再遇 502：桥会把本轮净化后的**完整请求**（所有角色 + tools + 形状摘要）落盘到 `logs/rejected-payload-*.json`（报错文案里带路径），`node tools/bisect-payload.mjs <该文件>` 会整包重放并做逐条剔除 / 单条重放 / 文本二分，定位到具体字段与段落，按 `lib/prompt-shield.mjs` 的 `RULES` 格式加一条即可。旧的 `bisect-system.mjs` 仍可用于纯 system 文本。 |
 | 选某个模型就报 `model [xxx] service info not found` | 这个模型在 WorkBuddy 侧已下线或未接入，但它的名字还挂在账号的模型清单里。换一个模型即可；重跑 `node tools/install.mjs` 会用最新清单覆盖 profile。 |
 | `No API key for provider: workbuddy` | DSH 没拿到密钥。跑 `node tools/verify-config.mjs` 逐条看三处密钥哪处没对上，然后 `node tools/install.mjs` 重装修好，**重启 DSH**。 |
 | 请求全部 401 | 桥接手里的密钥和 DSH 发出的不是同一把。通常是改过密钥但没重启——重启 DSH；或者在设置页手填过别的密钥，见下条。 |
@@ -311,7 +311,7 @@ WorkBuddy 客户端把登录态以 `{"$wbEncrypted":1,...}` 信封（AES-256-GCM
 - 模型清单是安装时抓的快照。账号里上新模型了，重跑一次 `node tools/install.mjs` 即可。
 - 写进 provider 配置的字段克制在 `id / name / contextWindow / maxTokens / input /
   reasoningEfforts` 这几个 DSH 认得的键上。上游的积分倍率、限免标签、模型描述这些
-  **没有**写进去——碰 DSH 还不认的字段会让整段配置加载失败，代价是全部 33 个模型一起消失。
+  **没有**写进去——碰 DSH 还不认的字段会让整段配置加载失败，代价是唯一那份模型清单一起消失。
 - 上游没给 `supportedEfforts` 的模型不声明思考等级（见上文）。这不是漏配，是上游
   本来就没给等级清单。
 

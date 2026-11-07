@@ -39,8 +39,8 @@
   "contributes": {
     "x-display": [
       {
-        "title": "WorkBuddy Bridge",
-        "description": "Use the models in your local WorkBuddy account as DSH chat models."
+        "title": "WorkBuddy account",
+        "description": "Brings every model from your signed-in local WorkBuddy client into DSH — no separate API key, with today's credits and balance shown above the composer."
       }
     ]
   },

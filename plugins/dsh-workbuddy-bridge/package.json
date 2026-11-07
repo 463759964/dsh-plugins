@@ -1,7 +1,7 @@
 {
   "name": "dsh-workbuddy-bridge",
   "version": "1.0.0",
-  "description": "把本机 WorkBuddy 账号里的模型接进 DeepSeek Harness：进程内起一个只监听 127.0.0.1 的 OpenAI 兼容端点，令牌从本地登录态取，用完即弃。",
+  "description": "把本机 WorkBuddy 客户端已登录账号里的全部模型接进 DSH：不用另配 API Key，聊天框上方直接显示今日积分与余额。",
   "keywords": [
     "deepseek",
     "harness",
@@ -31,6 +31,7 @@
       "default": "./lib/upstream.mjs"
     },
     "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
     "./cordis.patch.yml": "./cordis.patch.yml"
   },
   "dsh": {
@@ -46,6 +47,7 @@
   "files": [
     "lib",
     "tools",
+    "locale",
     "client.js",
     "cordis.patch.yml",
     "dsh-plugin.json",

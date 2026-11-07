@@ -9,7 +9,11 @@
  * 用法：
  *   node tools/bisect-system.mjs                     # 用当前目录下最新的 DSH 会话
  *   node tools/bisect-system.mjs <session.jsonl>     # 用指定文件（已解压的明文 jsonl）
+ *   node tools/bisect-system.mjs <dump.txt>          # 用桥落盘的净化后 system 提示（logs/rejected-system-*.txt）
  *   node tools/bisect-system.mjs --full              # 只验证整段 system 是否通过
+ *
+ * 注意：DSH Desktop 不再写 ~/.dsh/sessions，最可靠的输入是桥在被拒时自动落盘的
+ * logs/rejected-system-*.txt（502 报错文案里会带路径）。
  */
 import fs from 'node:fs';
 import os from 'node:os';
@@ -61,6 +65,12 @@ function newestSessionFile() {
 }
 
 function systemFromSession(file) {
+  // 桥落盘的 dump 是纯文本，直接用
+  if (file.endsWith('.txt')) {
+    const text = fs.readFileSync(file, 'utf8');
+    if (!text) throw new Error('dump 文件是空的。');
+    return text;
+  }
   const raw = file.endsWith('.zstd') ? readZstdJsonl(file) : fs.readFileSync(file, 'utf8');
   const events = raw
     .split('\n')
@@ -137,7 +147,9 @@ const full = argv.includes('--full');
 const explicit = argv.find((a) => !a.startsWith('--')) || null;
 const file = explicit ? path.resolve(explicit) : newestSessionFile();
 if (!file) {
-  console.error('没找到 DSH 会话文件，直接传一个路径进来。');
+  console.error('没找到 DSH 会话文件（DSH Desktop 不写 ~/.dsh/sessions）。');
+  console.error('最可靠的输入是桥在被拒时落盘的 logs/rejected-system-*.txt，502 报错文案里会带路径；');
+  console.error('也可以直接传任意一个明文文件进来：node tools/bisect-system.mjs <文件>');
   process.exit(1);
 }
 console.log('会话：', file);

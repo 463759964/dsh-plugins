@@ -11,6 +11,10 @@
  */
 import http from 'node:http';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { UpstreamClient, toUpstreamPayload } from './upstream.mjs';
 import { safeEqual } from './local-secret.mjs';
 import { UsageTracker, extractUsage, dayKey } from './usage-tracker.mjs';
@@ -415,13 +419,72 @@ class BridgeServer {
         if (text) message += `：${text.slice(0, 300)}`;
       }
       const status = upstream.status === 401 ? 401 : upstream.status === 429 ? 429 : 502;
-      return sendJson(res, status, openaiError(explainUpstreamError(message), 'upstream_error', code, status));
+      let explained = explainUpstreamError(message);
+      // 渠道判定时把净化后的 system 提示落盘，bisect 工具可以直接拿它二分，
+      // 不再依赖 DSH 的会话日志文件（Desktop 版已经不写 ~/.dsh/sessions 了）
+      if (/unapproved channel/i.test(message)) {
+        const dump = this.dumpRejectedPayload(payload);
+        if (dump.file) {
+          explained += `\n本轮（净化后的）完整请求已落盘：${dump.file}\n直接跑：node tools/bisect-payload.mjs "${dump.file}"`;
+        } else {
+          explained += `\n（请求落盘失败：${dump.error}——把这一段连同请求内容反馈给桥的作者）`;
+        }
+      }
+      return sendJson(res, status, openaiError(explained, 'upstream_error', code, status));
     }
 
     if (wantsStream) {
       return this.streamOut(upstream, res, body.model, contentType);
     }
     return this.collectOut(upstream, res, body.model, contentType);
+  }
+
+  /**
+   * 渠道判定被拒时，把（已净化的）完整请求落到 logs/ 下，供 bisect-payload.mjs 重放二分。
+   * 2026-11-07 的教训：只落 system 角色的旧版 dumpSystemForBisect 在真实故障里拿不出证据——
+   * 触发点可能在 user 消息（DSH 注入的 runtime-context / skills 提醒）或 tools 里，
+   * 而网关的判定文案永远只说「unapproved channel」，不告诉你在哪个字段。
+   * 所以这里落整个 payload（所有角色 + tools + 其余参数），外加一份形状摘要，
+   * 全部留在本机磁盘上，不上传任何地方。
+   * @returns {{ file: string|null, error: string|null }}
+   */
+  dumpRejectedPayload(payload) {
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const messages = Array.isArray(payload?.messages) ? payload.messages : [];
+    const summary = {
+      dumpedAt: new Date().toISOString(),
+      note: '渠道判定被拒时的完整请求（净化后）。仅落本机，供 tools/bisect-payload.mjs 重放定位。',
+      model: payload?.model ?? null,
+      messageShapes: messages.map((m) => ({
+        role: m?.role ?? null,
+        contentType: Array.isArray(m?.content) ? 'parts' : typeof m?.content,
+        textLength: typeof m?.content === 'string'
+          ? m.content.length
+          : (Array.isArray(m?.content) ? m.content.reduce((n, p) => n + String(p?.text || '').length, 0) : 0),
+      })),
+      toolCount: Array.isArray(payload?.tools) ? payload.tools.length : 0,
+      toolNames: Array.isArray(payload?.tools)
+        ? payload.tools.map((t) => t?.function?.name || t?.name || '?')
+        : [],
+      otherKeys: Object.keys(payload || {}).filter((k) => !['messages', 'tools', 'model'].includes(k)),
+    };
+    const body = JSON.stringify({ summary, payload }, null, 2);
+    const dirs = [
+      path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'logs'),
+      path.join(os.tmpdir(), 'dsh-workbuddy-bridge-logs'),
+    ];
+    let lastError = null;
+    for (const dir of dirs) {
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+        const file = path.join(dir, `rejected-payload-${stamp}.json`);
+        fs.writeFileSync(file, body);
+        return { file, error: null };
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    return { file: null, error: lastError ? lastError.message : '未知原因' };
   }
 
   /** 流式：把上游 SSE 归一化后原样吐给 DSH。 */

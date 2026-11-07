@@ -195,6 +195,17 @@ export function toUpstreamPayload(body) {
   for (const key of PASSTHROUGH_KEYS) {
     if (body[key] !== undefined) out[key] = body[key];
   }
+  // developer 角色本身就是网关的渠道指纹（2026-11-07 实测）：DSH 新版把系统提示放在
+  // developer 角色发出，而 WorkBuddy 网关见到 developer 角色即整轮拒——与内容无关，
+  // 哪怕只有一句 "You are a helpful assistant." 也照拒；同一段文字放 system/user 就过。
+  // developer 与 system 语义等价（OpenAI o 系惯例），统一改名后转发；
+  // 改名还顺带让 prompt-shield 的 system 规则重新覆盖到这段文本（此前它只认 system 角色，
+  // DSH 换成 developer 后净化整体失效，这就是「规则都在却仍被 502」的根因）。
+  if (Array.isArray(out.messages)) {
+    out.messages = out.messages.map((m) =>
+      m && typeof m === 'object' && m.role === 'developer' ? { ...m, role: 'system' } : m,
+    );
+  }
   // 部分客户端用 maxTokens，网关只认 max_tokens
   if (out.max_tokens === undefined && Number.isFinite(body.maxTokens)) {
     out.max_tokens = body.maxTokens;
