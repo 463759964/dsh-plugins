@@ -63,20 +63,21 @@ for (const node of tree.tree) {
 }
 
 const localFiles = walk(LOCAL_ROOT);
+const FULL = process.argv.includes('--full') || process.env.FULL === '1';
 const changed = [];
 for (const file of localFiles) {
   const rel = path.relative(LOCAL_ROOT, file).split(path.sep).join('/');
   const buf = fs.readFileSync(file);
   const sha = blobSha(buf);
-  if (remoteSha.get(rel) !== sha) changed.push({ rel, buf, sha });
+  if (FULL || remoteSha.get(rel) !== sha) changed.push({ rel, buf, sha });
   remoteSha.delete(rel);
 }
 
-console.log(`本地文件 ${localFiles.length} 个；需要更新 ${changed.length} 个；远端多出 ${remoteSha.size} 个`);
-for (const c of changed) console.log('  改:', c.rel);
-for (const r of remoteSha.keys()) console.log('  仅远端有:', r);
+console.log(`本地文件 ${localFiles.length} 个；需要更新 ${changed.length} 个；远端多出 ${remoteSha.size} 个${FULL ? '（全量模式：全部重传）' : ''}`);
+for (const c of changed) console.log(FULL && remoteSha.size === 0 && localFiles.length === changed.length ? '  -' : '  改:', c.rel);
+for (const r of remoteSha.keys()) console.log('  删除（本地已无）:', r);
 
-if (!changed.length) {
+if (!changed.length && !remoteSha.size) {
   console.log('没有内容变化，无需提交。');
   process.exit(0);
 }
@@ -88,6 +89,10 @@ for (const c of changed) {
     body: JSON.stringify({ content: c.buf.toString('base64'), encoding: 'base64' }),
   });
   entries.push({ path: `${REPO_PREFIX}/${c.rel}`, mode: '100644', type: 'blob', sha: blob.sha });
+}
+// 远端有、本地没有的文件：树里给 sha=null 即删除，做到「完全覆盖」
+for (const rel of remoteSha.keys()) {
+  entries.push({ path: `${REPO_PREFIX}/${rel}`, mode: '100644', type: 'blob', sha: null });
 }
 
 const newTree = await api(`/repos/${OWNER}/${REPO}/git/trees`, {
