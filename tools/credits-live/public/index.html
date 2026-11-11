@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WorkBuddy 积分看板 · 实时</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --card:#fff; --line:#e6e8eb; --tx:#18181b; --tx2:#5b5f66; --tx3:#8b9096;
+    --red:#e5484d; --green:#30a46c; --amber:#f5a524; --blue:#6366f1;
+    --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  .wrap{max-width:980px;margin:0 auto;padding:28px 20px 48px}
+  h1{font-size:21px;margin:0 0 6px;letter-spacing:-.01em}
+  h2{font-size:14px;color:var(--tx2);margin:26px 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  h2 small{font-weight:400;color:var(--tx3);font-size:12px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .sub{color:var(--tx3);font-size:13px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;background:#f0f1f3;color:var(--tx2);border:1px solid var(--line)}
+  .badge.ok{background:#e9f8f0;color:#1f7a4d;border-color:#c5ebd8}
+  .badge.warn{background:#fef6e7;color:#9a6a10;border-color:#f7e0b5}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+  @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+  .kpi{padding:14px 16px}
+  .kpi .lab{color:var(--tx3);font-size:12px}
+  .kpi .val{font-size:22px;font-weight:600;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+  .kpi .foot{color:var(--tx3);font-size:12px}
+  .neg{color:var(--green)} .pos{color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #f0f1f3}
+  th{color:var(--tx3);font-weight:500;font-size:12px}
+  tr:last-child td{border-bottom:none}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .bar{height:6px;background:#f0f1f3;border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--blue);border-radius:3px}
+  .bar.green i{background:var(--green)}
+  .bar.amber i{background:var(--amber)}
+  .tabs{display:flex;gap:8px;margin:18px 0 0;flex-wrap:wrap}
+  .tab{padding:5px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--tx2);cursor:pointer;font-size:13px}
+  .tab[aria-selected="true"]{background:var(--tx);color:#fff;border-color:var(--tx)}
+  .empty{color:var(--tx3);font-size:13px;padding:18px;text-align:center}
+  .acctrow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f1f3}
+  .acctrow:last-child{border-bottom:none}
+  .acctrow .nm{width:74px;font-weight:500}
+  .acctrow .big{font-variant-numeric:tabular-nums;width:86px;text-align:right;font-weight:600}
+  .acctrow .track{flex:1;height:8px;background:#f0f1f3;border-radius:4px;overflow:hidden}
+  .acctrow .track i{display:block;height:100%;border-radius:4px}
+  .acctrow .meta{color:var(--tx3);font-size:12px;width:190px;text-align:right}
+  .pill{display:inline-block;padding:0 6px;border-radius:4px;background:#f4f4f5;color:var(--tx2);font-size:11px;margin-left:4px}
+  .btn{padding:5px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--tx2);cursor:pointer;font-size:13px}
+  .btn:hover{background:#f0f1f3}
+  .btn:disabled{opacity:.5;cursor:default}
+  select{padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--tx2);font-size:13px}
+  .live{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--tx3);margin-top:14px;flex-wrap:wrap}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}
+  .dot.loading{background:var(--amber);animation:pulse 1s infinite}
+  .dot.error{background:var(--red)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .warn{background:#fef6e7;border:1px solid #f7e0b5;color:#9a6a10;padding:10px 14px;border-radius:8px;font-size:13px;margin-top:12px}
+  footer{margin-top:28px;color:var(--tx3);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>WorkBuddy 积分看板 · 实时</h1>
+      <div class="sub" id="acct"></div>
+    </div>
+    <div class="sub">
+      <select id="iv">
+        <option value="15000">15 秒</option>
+        <option value="30000" selected>30 秒</option>
+        <option value="60000">1 分钟</option>
+        <option value="0">手动</option>
+      </select>
+      <button class="btn" id="refresh">立即刷新</button>
+    </div>
+  </header>
+
+  <div class="live">
+    <span class="dot loading" id="dot"></span><span id="status">正在连接…</span><span id="countdown"></span>
+  </div>
+  <div id="warn"></div>
+
+  <div class="grid" id="kpis"></div>
+
+  <h2>账号余额对比 <small>条长为占合计比例</small></h2>
+  <div class="card" id="acctbars"></div>
+
+  <h2>到期分布 <small>按到期日聚合，红色为 7 天内</small></h2>
+  <div class="card" id="expiry"></div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="detail"></div>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const n = (v) => Number(v || 0).toFixed(2);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md = (s) => s ? `${Number(String(s).slice(5,7))}月${Number(String(s).slice(8,10))}日` : '—';
+const PALETTE = ['#6366f1','#f59e0b','#10b981','#ec4899','#0ea5e9'];
+
+let DATA = null, ACTIVE = 0, timer = null, tick = null, remain = 0, busy = false, NOW = new Date();
+
+async function load(force) {
+  if (busy) return;
+  busy = true;
+  $('refresh').disabled = true;
+  $('dot').className = 'dot loading';
+  $('status').textContent = '正在拉取账号服务端数据…';
+  try {
+    const r = await fetch('/api/data' + (force ? '?force=1' : ''), { cache: 'no-store' });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    DATA = j;
+    NOW = new Date(j.serverTime.replace(/-/g,'/'));
+    render();
+    const t = NOW;
+    $('dot').className = 'dot';
+    $('status').textContent = `已更新 ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`
+      + (j.cached ? '（服务端缓存 60s）' : '（实时）');
+  } catch (e) {
+    $('dot').className = 'dot error';
+    $('status').textContent = '拉取失败：' + String(e.message || e).slice(0, 60);
+    $('warn').innerHTML = `<div class="warn">数据拉取失败：${esc(String(e.message || e))}<br>常见原因：凭证过期、令牌被撤销、或网络无法访问 copilot.tencent.com。页面会继续自动重试。</div>`;
+  } finally {
+    busy = false;
+    $('refresh').disabled = false;
+    restartTimer();
+  }
+}
+
+function restartTimer() {
+  clearInterval(timer); clearInterval(tick);
+  const iv = Number($('iv').value);
+  if (!iv) { $('countdown').textContent = ''; return; }
+  remain = iv / 1000;
+  const paint = () => { $('countdown').textContent = `· ${remain}s 后刷新`; };
+  paint();
+  tick = setInterval(() => { remain = Math.max(0, remain - 1); paint(); }, 1000);
+  timer = setInterval(() => { remain = iv / 1000; load(false); }, iv);
+}
+
+function render() {
+  if (!DATA) return;
+  $('warn').innerHTML = (DATA.errors && DATA.errors.length)
+    ? `<div class="warn">部分账号拉取失败：${DATA.errors.map((e) => esc(e)).join('；')}</div>` : '';
+  const acc = DATA.accounts || [];
+  const total = acc.reduce((s,a)=>s+a.balance,0);
+  const used = acc.reduce((s,a)=>s+a.used,0);
+  const requests = acc.reduce((s,a)=>s+a.requests,0);
+  const flatPacks = acc.flatMap((a)=>a.packs.filter(p=>!p.forever).map((p)=>({...p,label:a.label})));
+  const daysLeft = (ms) => Math.ceil((ms - NOW.getTime())/864e5);
+  const within = (d) => flatPacks.filter(p=>daysLeft(p.end_ms)<=d && daysLeft(p.end_ms)>=0).reduce((s,p)=>s+p.remain,0);
+  const forever = acc.reduce((s,a)=>s+a.packs.filter(p=>p.forever).reduce((t,p)=>t+p.remain,0),0);
+
+  $('acct').innerHTML = acc.map((a)=>`<span class="badge ok">${esc(a.label)}</span>`).join(' ')
+    + ` <span>· 共 ${acc.length} 个账号 · 快照 ${esc(DATA.generatedAt)}</span>`;
+
+  $('kpis').innerHTML = [
+    {lab:'合计余额', val:n(total), foot:`${acc.length} 个账号`, cls:''},
+    {lab:'今日消耗', val:'−'+n(used), foot:`${requests} 笔请求`, cls:'neg'},
+    {lab:'7 天内到期', val:n(within(7)), foot:'到期未用即作废', cls: within(7)>0?'neg':''},
+    {lab:'30 天内到期', val:n(within(30)), foot:`长期有效 ${n(forever)}`, cls: within(30)>0?'neg':''},
+  ].map((k)=>`<div class="card kpi"><div class="lab">${k.lab}</div><div class="val ${k.cls}">${k.val}</div><div class="foot">${k.foot}</div></div>`).join('');
+
+  $('acctbars').innerHTML = acc.map((a,i)=>`<div class="acctrow">
+    <div class="nm">${esc(a.label)}</div>
+    <div class="big">${n(a.balance)}</div>
+    <div class="track"><i style="width:${total>0?(a.balance/total*100):0}%;background:${PALETTE[i%5]}"></i></div>
+    <div class="meta">耗 −${n(a.used)}<span class="pill">${a.requests} 笔</span></div>
+  </div>`).join('');
+
+  const byDay = {};
+  flatPacks.forEach((p)=>{
+    const d = p.end.slice(0,10);
+    (byDay[d] = byDay[d] || {credit:0,count:0});
+    byDay[d].credit += p.remain; byDay[d].count += 1;
+  });
+  const days = Object.entries(byDay).sort((a,b)=> a[0] < b[0] ? -1 : 1);
+  const maxDay = Math.max(1, ...days.map(([,v])=>v.credit));
+  $('expiry').innerHTML = days.length ? `<div style="padding:2px 0"><table>
+    <tr><th>到期日</th><th class="num">剩余</th><th class="num">包数</th><th style="width:36%"></th><th class="num">剩余天数</th></tr>
+    ${days.map(([d,v])=>{
+      const dl = Math.ceil((new Date(d+'T23:59:59') - NOW)/864e5);
+      const cls = dl<=7 ? 'bar' : (dl<=30 ? 'bar amber' : 'bar green');
+      return `<tr><td>${md(d)} ${dl<=7?'<span class="badge warn">紧迫</span>':''}</td>
+        <td class="num">${n(v.credit)}</td><td class="num">${v.count}</td>
+        <td><div class="${cls}"><i style="width:${(v.credit/maxDay)*100}%"></i></div></td>
+        <td class="num">${dl} 天</td></tr>`;
+    }).join('')}
+    ${forever>0?`<tr><td>长期有效</td><td class="num">${n(forever)}</td><td class="num">—</td><td><div class="bar"><i style="width:100%;background:#a1a1aa"></i></div></td><td class="num">—</td></tr>`:''}
+  </table></div>` : '<div class="empty">暂无到期积分包</div>';
+
+  tabs(); detail();
+  $('foot').textContent = '数据来源：账号服务端逐笔扣费与积分包接口 · 快照 ' + DATA.generatedAt
+    + ' · 服务端每 60s 缓存，页面自动轮询刷新 · 余额为实时值，每轮对话都会继续扣减';
+}
+
+function tabs() {
+  const acc = DATA.accounts || [];
+  if (acc.length < 2) { $('tabs').innerHTML = ''; return; }
+  if (ACTIVE >= acc.length) ACTIVE = 0;
+  $('tabs').innerHTML = acc.map((a, i) =>
+    `<button class="tab" data-i="${i}" aria-selected="${i===ACTIVE}">${esc(a.label)}</button>`).join('');
+  $('tabs').querySelectorAll('.tab').forEach((b) => b.onclick = () => { ACTIVE = +b.dataset.i; tabs(); detail(); });
+}
+
+function detail() {
+  const acc = DATA.accounts || [];
+  const a = acc[ACTIVE];
+  if (!a) { $('detail').innerHTML = '<div class="empty">暂无账号数据</div>'; return; }
+  const daysLeft = (ms) => Math.ceil((ms - NOW.getTime())/864e5);
+  const maxM = Math.max(1, ...a.by_model.map(m=>m.credit));
+  const a7 = a.packs.filter(p=>!p.forever && daysLeft(p.end_ms)<=7 && daysLeft(p.end_ms)>=0).reduce((s,p)=>s+p.remain,0);
+  const a30 = a.packs.filter(p=>!p.forever && daysLeft(p.end_ms)<=30 && daysLeft(p.end_ms)>=0).reduce((s,p)=>s+p.remain,0);
+  const top = a.packs.slice(0, 12);
+
+  $('detail').innerHTML = `
+    <section>
+      <h2>${esc(a.label)} · 概览
+        <small>余额 ${n(a.balance)} ｜ 今日耗 ${n(a.used)}（${a.requests} 笔）｜ 7 天内到期 ${n(a7)} ｜ 30 天内到期 ${n(a30)}</small>
+      </h2>
+      <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-top:0">
+        <div class="card kpi"><div class="lab">当前余额</div><div class="val">${n(a.balance)}</div><div class="foot">实时</div></div>
+        <div class="card kpi"><div class="lab">今日消耗</div><div class="val neg">−${n(a.used)}</div><div class="foot">${a.requests} 笔</div></div>
+        <div class="card kpi"><div class="lab">积分包数</div><div class="val">${a.packs.length}</div><div class="foot">含长期有效 ${a.packs.filter(p=>p.forever).length}</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>今日消耗 <small>按模型</small></h2>
+      <div class="card" style="padding:2px 0"><table>
+        <tr><th>模型</th><th class="num">消耗</th><th class="num">笔数</th><th style="width:40%"></th></tr>
+        ${a.by_model.length ? a.by_model.map((m)=>`<tr><td>${esc(m.key)}</td><td class="num neg">−${n(m.credit)}</td>
+          <td class="num">${m.count}</td><td><div class="bar green"><i style="width:${(m.credit/maxM)*100}%"></i></div></td></tr>`).join('')
+          : '<tr><td colspan="4" class="empty">今日暂无消耗</td></tr>'}
+      </table></div>
+    </section>
+
+    <section>
+      <h2>积分包明细 <small>按到期时间排序，最多 12 条</small></h2>
+      <div class="card" style="padding:2px 0"><table>
+        <tr><th>到期时间</th><th class="num">剩余</th><th class="num">剩余天数</th></tr>
+        ${top.length ? top.map((p)=>{
+          const dl = p.forever ? '—' : Math.ceil((p.end_ms-NOW)/864e5);
+          return `<tr><td>${p.forever?'长期有效':esc(p.end)}</td><td class="num">${n(p.remain)}</td>
+            <td class="num">${dl==='—'?'—':(dl+' 天')}</td></tr>`;
+        }).join('') : '<tr><td colspan="3" class="empty">暂无积分包</td></tr>'}
+      </table></div>
+    </section>`;
+}
+
+$('refresh').onclick = () => load(true);
+$('iv').onchange = () => restartTimer();
+load(true);
+</script>
+</body>
+</html>

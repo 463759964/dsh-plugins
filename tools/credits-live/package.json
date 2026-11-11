@@ -1,0 +1,14 @@
+{
+  "name": "workbuddy-credit-dashboard",
+  "version": "1.0.0",
+  "description": "WorkBuddy 多账号积分实时看板（零依赖 Node 服务）",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}
