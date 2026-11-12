@@ -62,6 +62,26 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   .warn{background:#fef6e7;border:1px solid #f7e0b5;color:#9a6a10;padding:10px 14px;border-radius:8px;font-size:13px;margin-top:12px}
   footer{margin-top:28px;color:var(--tx3);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+  .card{overflow-x:auto}
+  /* 手机适配 */
+  @media(max-width:600px){
+    .wrap{padding:14px 12px 36px}
+    h1{font-size:18px}
+    h2{margin:20px 0 8px;font-size:13px}
+    .grid{grid-template-columns:repeat(2,1fr);gap:8px}
+    .kpi{padding:10px 12px}
+    .kpi .val{font-size:18px}
+    .card{border-radius:8px}
+    th[style]{width:auto!important}
+    table{font-size:12px}
+    th,td{padding:7px 8px}
+    .acctrow{padding:10px 12px}
+    .acctrow .nm{width:auto;min-width:56px}
+    .acctrow .big{width:auto;padding-left:8px}
+    .acctrow .meta{width:auto;flex-shrink:0}
+    .tab{padding:6px 12px}
+    footer{margin-top:20px}
+  }
 </style>
 </head>
 <body>
@@ -91,9 +111,6 @@
 
   <h2>账号余额对比 <small>条长为占合计比例</small></h2>
   <div class="card" id="acctbars"></div>
-
-  <h2>到期分布 <small>按到期日聚合，红色为 7 天内</small></h2>
-  <div class="card" id="expiry"></div>
 
   <div class="tabs" id="tabs"></div>
   <div id="detail"></div>
@@ -179,27 +196,6 @@ function render() {
     <div class="meta">耗 −${n(a.used)}<span class="pill">${a.requests} 笔</span></div>
   </div>`).join('');
 
-  const byDay = {};
-  flatPacks.forEach((p)=>{
-    const d = p.end.slice(0,10);
-    (byDay[d] = byDay[d] || {credit:0,count:0});
-    byDay[d].credit += p.remain; byDay[d].count += 1;
-  });
-  const days = Object.entries(byDay).sort((a,b)=> a[0] < b[0] ? -1 : 1);
-  const maxDay = Math.max(1, ...days.map(([,v])=>v.credit));
-  $('expiry').innerHTML = days.length ? `<div style="padding:2px 0"><table>
-    <tr><th>到期日</th><th class="num">剩余</th><th class="num">包数</th><th style="width:36%"></th><th class="num">剩余天数</th></tr>
-    ${days.map(([d,v])=>{
-      const dl = Math.ceil((new Date(d+'T23:59:59') - NOW)/864e5);
-      const cls = dl<=7 ? 'bar' : (dl<=30 ? 'bar amber' : 'bar green');
-      return `<tr><td>${md(d)} ${dl<=7?'<span class="badge warn">紧迫</span>':''}</td>
-        <td class="num">${n(v.credit)}</td><td class="num">${v.count}</td>
-        <td><div class="${cls}"><i style="width:${(v.credit/maxDay)*100}%"></i></div></td>
-        <td class="num">${dl} 天</td></tr>`;
-    }).join('')}
-    ${forever>0?`<tr><td>长期有效</td><td class="num">${n(forever)}</td><td class="num">—</td><td><div class="bar"><i style="width:100%;background:#a1a1aa"></i></div></td><td class="num">—</td></tr>`:''}
-  </table></div>` : '<div class="empty">暂无到期积分包</div>';
-
   tabs(); detail();
   $('foot').textContent = '数据来源：账号服务端逐笔扣费与积分包接口 · 快照 ' + DATA.generatedAt
     + ' · 服务端每 60s 缓存，页面自动轮询刷新 · 余额为实时值，每轮对话都会继续扣减';
@@ -224,6 +220,26 @@ function detail() {
   const a30 = a.packs.filter(p=>!p.forever && daysLeft(p.end_ms)<=30 && daysLeft(p.end_ms)>=0).reduce((s,p)=>s+p.remain,0);
   const top = a.packs.slice(0, 12);
 
+  // 按到期日聚合：同一天的积分包合并为一行
+  const byDayA = {};
+  a.packs.filter((p)=>!p.forever).forEach((p)=>{
+    const d = p.end.slice(0,10);
+    (byDayA[d] = byDayA[d] || {credit:0,count:0});
+    byDayA[d].credit += p.remain; byDayA[d].count += 1;
+  });
+  const daysA = Object.entries(byDayA).sort((x,y)=> x[0] < y[0] ? -1 : 1);
+  const maxA = Math.max(1, ...daysA.map(([,v])=>v.credit));
+  const foreverA = a.packs.filter((p)=>p.forever).reduce((s,p)=>s+p.remain,0);
+  const expiryRows = daysA.map(([d,v])=>{
+      const dl = Math.ceil((new Date(d+'T23:59:59') - NOW)/864e5);
+      const cls = dl<=7 ? 'bar' : (dl<=30 ? 'bar amber' : 'bar green');
+      return `<tr><td>${md(d)} ${dl<=7?'<span class="badge warn">紧迫</span>':''}</td>
+        <td class="num">${n(v.credit)}</td><td class="num">${v.count}</td>
+        <td><div class="${cls}"><i style="width:${(v.credit/maxA)*100}%"></i></div></td>
+        <td class="num">${dl} 天</td></tr>`;
+    }).join('')
+    + (foreverA>0?`<tr><td>长期有效</td><td class="num">${n(foreverA)}</td><td class="num">—</td><td><div class="bar"><i style="width:100%;background:#a1a1aa"></i></div></td><td class="num">—</td></tr>`:'');
+
   $('detail').innerHTML = `
     <section>
       <h2>${esc(a.label)} · 概览
@@ -234,6 +250,14 @@ function detail() {
         <div class="card kpi"><div class="lab">今日消耗</div><div class="val neg">−${n(a.used)}</div><div class="foot">${a.requests} 笔</div></div>
         <div class="card kpi"><div class="lab">积分包数</div><div class="val">${a.packs.length}</div><div class="foot">含长期有效 ${a.packs.filter(p=>p.forever).length}</div></div>
       </div>
+    </section>
+
+    <section>
+      <h2>${esc(a.label)} · 到期分布 <small>按到期日聚合，同一天合并；红色 7 天内 / 黄色 30 天内</small></h2>
+      <div class="card" style="padding:2px 0"><table>
+        <tr><th>到期日</th><th class="num">剩余</th><th class="num">包数</th><th style="width:36%"></th><th class="num">剩余天数</th></tr>
+        ${daysA.length ? expiryRows : '<tr><td colspan="5" class="empty">暂无到期积分包</td></tr>'}
+      </table></div>
     </section>
 
     <section>
